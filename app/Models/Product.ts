@@ -1,16 +1,35 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, BelongsTo, belongsTo, column } from '@ioc:Adonis/Lucid/Orm'
+import Lot from './Lot'
 
 export default class Product extends BaseModel {
   @column({ isPrimary: true })
   public id: number
 
   @column()
-  public name:string
+  public description:string
+
+  @column()
+  public weight:number
+
+  @column()
+  public size:number // Dimensiones del producto
+
+  @column()
+  public type:string // Alimentos perecederos, etc
+
+  @column()
+  public lot_id:number
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   public updatedAt: DateTime
+
+  @belongsTo(() => Lot, {
+    // Este es el nombre de la clave foranea
+    foreignKey: 'lot_id'
+  })
+  public lot: BelongsTo<typeof Lot>
 }

@@ -5,6 +5,8 @@ export default class ProductsController {
     public async find({ request, params }: HttpContextContract) {
         if (params.id) {
             let theProduct: Product = await Product.findOrFail(params.id)
+            // CUando se visualice un solo producto, aparecerá el lote
+            await theProduct.load('lot')
             return theProduct;
         } else {
             const data = request.all()
@@ -29,7 +31,11 @@ export default class ProductsController {
     public async update({ params, request }: HttpContextContract) {
         const theProduct: Product = await Product.findOrFail(params.id);
         const body = request.body();
-        theProduct.name = body.name;
+        theProduct.description = body.name;
+        theProduct.weight = body.name;
+        theProduct.size = body.name;
+        theProduct.type = body.name;
+        theProduct.lot_id = body.lot_id
         return await theProduct.save();
     }
 
