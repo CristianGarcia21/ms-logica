@@ -5,6 +5,8 @@ export default class CategoriesController {
     public async find({ request, params }: HttpContextContract) {
         if (params.id) {
             let theCategory: Category = await Category.findOrFail(params.id)
+            await theCategory.load("subcategory")
+            await theCategory.load("parentCategory")
             return theCategory;
         } else {
             const data = request.all()
@@ -30,6 +32,7 @@ export default class CategoriesController {
         const theCategory: Category = await Category.findOrFail(params.id);
         const body = request.body();
         theCategory.name = body.name;
+        theCategory.parent_id = body.parent_id
         return await theCategory.save();
     }
 
