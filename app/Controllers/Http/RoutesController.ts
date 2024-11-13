@@ -5,8 +5,8 @@ export default class RoutesController {
     public async find({ request, params }: HttpContextContract) {
         if (params.id) {
             let theRoute: Route = await Route.findOrFail(params.id)
-            // await theRoute.load("product")
-            // await theRoute.load("category")
+            await theRoute.load("contract")
+            await theRoute.load("vehicle")
             return theRoute;
         } else {
             const data = request.all()

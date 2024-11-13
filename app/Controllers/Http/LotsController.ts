@@ -6,6 +6,7 @@ export default class LotsController {
         if (params.id) {
             let theLot: Lot = await Lot.findOrFail(params.id)
             await theLot.load("product")
+            await theLot.load("route")
             return theLot;
         } else {
             const data = request.all()
