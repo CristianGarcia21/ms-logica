@@ -33,3 +33,8 @@ import "./routes/companies"
 import "./routes/natural_people"
 import "./routes/contrats"
 import "./routes/vehicles"
+
+import "./routes/drivers"
+import "./routes/shifts"
+import "./routes/installments"
+import "./routes/invoices"
