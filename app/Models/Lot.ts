@@ -1,6 +1,7 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column, HasMany, hasMany } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, BelongsTo, belongsTo, column, HasMany, hasMany } from '@ioc:Adonis/Lucid/Orm'
 import Product from './Product'
+import Route from './Route'
 
 export default class Lot extends BaseModel {
   @column({ isPrimary: true })
@@ -18,6 +19,9 @@ export default class Lot extends BaseModel {
   @column()
   public size:number
 
+  @column()
+  public route_id:number
+
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
 
@@ -29,4 +33,9 @@ export default class Lot extends BaseModel {
     foreignKey: 'lot_id'
   })
   public product: HasMany<typeof Product>
+
+  @belongsTo(() => Route, {
+    foreignKey: 'route_id'
+  })
+  public route: BelongsTo<typeof Route>
 }

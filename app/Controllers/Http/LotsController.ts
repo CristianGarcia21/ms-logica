@@ -34,6 +34,7 @@ export default class LotsController {
         theLot.total_weight = body.total_weight;
         theLot.type = body.type;
         theLot.size = body.size;
+        theLot.route_id = body.route_id
         
         return await theLot.save();
     }
