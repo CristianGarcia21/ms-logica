@@ -3,6 +3,7 @@ import { BaseModel, BelongsTo, belongsTo, column, HasMany, hasMany } from '@ioc:
 import Department from './Department'
 import Address from './Address'
 import DistributionCenter from './DistributionCenter'
+import Operation from './Operation'
 
 export default class Municipality extends BaseModel {
   @column({ isPrimary: true })
@@ -37,4 +38,10 @@ export default class Municipality extends BaseModel {
     foreignKey: 'municipality_id'
   })
   public distributionCenter: HasMany<typeof DistributionCenter>
+
+  @hasMany(() => Operation, {
+    // Este es el nombre de la clave foranea
+    foreignKey: 'municipality_id'
+  })
+  public operation: HasMany<typeof Operation>
 }

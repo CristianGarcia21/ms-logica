@@ -12,6 +12,7 @@ export default class extends BaseSchema {
       table.integer("size")
       table.string("type")
       table.integer("lot_id").unsigned().references("lots.id")
+      table.integer("client_id").unsigned().references("clients.id")
 
       table.timestamp('created_at', { useTz: true })
       table.timestamp('updated_at', { useTz: true })
