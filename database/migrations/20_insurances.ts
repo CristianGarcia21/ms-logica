@@ -11,7 +11,7 @@ export default class extends BaseSchema {
       table.integer('vehicle_id').unsigned().references('vehicles.id')
       table.date('start_date')
       table.date('due_date')
-      table.string('state')
+      table.boolean('state')
 
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL

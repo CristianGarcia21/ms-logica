@@ -1,7 +1,7 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Installment from 'App/Models/Payment';
 
-export default class PaymentsController {
+export default class InstallmentsController {
     public async find({ request, params }: HttpContextContract) {
         if (params.id) {
             let theInstallment: Installment = await Installment.findOrFail(params.id)
@@ -35,7 +35,6 @@ export default class PaymentsController {
         theInstallment.start_date = body.start_date;
         theInstallment.end_date = body.end_date;
         theInstallment.status = body.status;
-        theInstallment.contract_id = body.contract_id;
 
         return await theInstallment.save();
     }

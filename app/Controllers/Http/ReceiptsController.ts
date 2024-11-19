@@ -1,7 +1,7 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Invoice from 'App/Models/Receipt';
 
-export default class ReceiptsController {
+export default class InvoicesContollersController {
     public async find({ request, params }: HttpContextContract) {
         if (params.id) {
             let theInvoice: Invoice = await Invoice.findOrFail(params.id)
@@ -30,12 +30,9 @@ export default class ReceiptsController {
     public async update({ params, request }: HttpContextContract) {
         const theInvoice: Invoice = await Invoice.findOrFail(params.id);
         const body = request.body();
-        theInvoice.description = body.description;
-        theInvoice.start_date = body.start_date;
-        theInvoice.due_date = body.due_date;
-        theInvoice.value = body.value;
-        theInvoice.state = body.state;
-        theInvoice.payment_id = body.payment_id;
+        theInvoice.customer_id = body.customer_id;
+        theInvoice.total_amount = body.amount;
+        theInvoice.status = body.status;
 
         return await theInvoice.save();
     }

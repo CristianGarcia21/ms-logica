@@ -20,7 +20,7 @@ export default class Installment extends BaseModel {
   public end_date: DateTime
 
   @column()
-  public status: string
+  public status: boolean
 
   @column()
   public contract_id: number

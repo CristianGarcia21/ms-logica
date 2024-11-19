@@ -1,30 +1,27 @@
 import { DateTime } from 'luxon'
 import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
 
-export default class Insurance extends BaseModel {
+export default class Hotel extends BaseModel {
   @column({ isPrimary: true })
   public id: number
 
   @column()
-  public vehicle_id: number
+  public name: string
 
   @column()
-  public insurance_company: string
+  public address: string
 
   @column()
-  public policy_number: string
+  public phone: string
 
   @column()
-  public start_date: DateTime
+  public email: string
 
   @column()
-  public end_date: DateTime
+  public status: string
 
   @column()
-  public amount: number
-
-  @column()
-  public status: boolean
+  public service_id: number
 
 
   @column.dateTime({ autoCreate: true })
