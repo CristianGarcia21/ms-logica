@@ -9,6 +9,7 @@ export default class extends BaseSchema {
       table.string('name')
       table.string('nit')
       table.integer('natural_person_id').unsigned().references('natural_people.id')
+      table.integer('client_id').unsigned().references('clients.id')
       table.timestamp('created_at', { useTz: true })
       table.timestamp('updated_at', { useTz: true })
     })

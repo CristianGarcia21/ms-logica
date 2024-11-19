@@ -1,6 +1,7 @@
 import { DateTime } from 'luxon'
 import { BaseModel, column, HasMany, hasMany } from '@ioc:Adonis/Lucid/Orm'
 import Route from './Route'
+import Operation from './Operation'
 
 export default class Vehicle extends BaseModel {
   @column({ isPrimary: true })
@@ -28,4 +29,9 @@ export default class Vehicle extends BaseModel {
     foreignKey: 'route_id'
   })
   public route: HasMany<typeof Route>
+
+  @hasMany(() => Operation, {
+    foreignKey: 'vehicle_id'
+  })
+  public operation: HasMany<typeof Operation>
 }

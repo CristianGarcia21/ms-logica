@@ -31,6 +31,8 @@ public async update({ params, request }: HttpContextContract) {
     const body = request.body();
     theNaturalPerson.cedula = body.cedula;
     theNaturalPerson.birth_date = body.birth_date;
+    theNaturalPerson.company_id = body.company_id;
+    theNaturalPerson.client_id = body.client_id;
     return await theNaturalPerson.save();
 }
 
