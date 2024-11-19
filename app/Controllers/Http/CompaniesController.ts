@@ -32,7 +32,6 @@ public async update({ params, request }: HttpContextContract) {
     const body = request.body();
     theCompany.name = body.name;
     theCompany.nit = body.nit;
-    theCompany.natural_person_id = body.natural_person_id;
     theCompany.client_id = body.client_id;
     return await theCompany.save();
 }

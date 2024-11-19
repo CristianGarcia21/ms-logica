@@ -11,7 +11,7 @@ export default class extends BaseSchema {
       table.date('due_date')
       table.integer('value')
       table.string('state')
-      table.integer('installment_id').unsigned().references('installments.id')
+      table.integer('payment_id').unsigned().references('payments.id')
 
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL

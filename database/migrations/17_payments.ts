@@ -10,8 +10,8 @@ export default class extends BaseSchema {
       table.integer('value')
       table.date('start_date')
       table.date('end_date')
-      table.string('state')
-      table.string('contract_id').unsigned().references('contracts.id')
+      table.string('status')
+      table.integer('contract_id').unsigned().references('contracts.id')
 
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
