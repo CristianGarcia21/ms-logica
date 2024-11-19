@@ -35,7 +35,7 @@ export default class ReceiptsController {
         theInvoice.due_date = body.due_date;
         theInvoice.value = body.value;
         theInvoice.state = body.state;
-        theInvoice.installment_id = body.installment_id;
+        theInvoice.payment_id = body.payment_id;
 
         return await theInvoice.save();
     }
