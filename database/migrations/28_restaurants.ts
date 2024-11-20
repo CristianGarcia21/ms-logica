@@ -9,7 +9,7 @@ export default class extends BaseSchema {
       table.string('name')
       table.string('address')
       table.string('phone')
-      table.string('services_id')
+      // table.string('services_id')
      
 
       /**

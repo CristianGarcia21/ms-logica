@@ -2,6 +2,8 @@ import { DateTime } from 'luxon'
 import { BaseModel, BelongsTo, belongsTo, column } from '@ioc:Adonis/Lucid/Orm'
 import Service from './Service'
 import Driver from './Driver'
+import Owner from './Owner'
+import Receipt from './Receipt'
 
 export default class Expense extends BaseModel {
   @column({ isPrimary: true })
@@ -19,6 +21,15 @@ export default class Expense extends BaseModel {
   @column()
   public owner_id: number
 
+  @column()
+  public service_id: number
+
+  @column()
+  public driver_id: number
+
+  @column()
+  public receipt_id: number
+
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
 
@@ -35,4 +46,13 @@ export default class Expense extends BaseModel {
   })
   public driver: BelongsTo<typeof Driver>
 
+  @belongsTo(() => Owner, {
+    foreignKey: 'owner_id'
+  })
+  public owner: BelongsTo<typeof Owner>
+  
+  @belongsTo(() => Receipt, {
+    foreignKey: 'receipt_id'
+  })
+  public receipt: BelongsTo<typeof Receipt>
 }

@@ -28,7 +28,11 @@ export default class ExpensesController {
     public async update({ params, request }: HttpContextContract) {
         const theExpense: Expense = await Expense.findOrFail(params.id);
         const body = request.body();
+        theExpense.amount = body.amount;
+        theExpense.description = body.description;
+        theExpense.date = body.date;
         theExpense.owner_id = body.owner_id;
+        theExpense.service_id = body.service_id;
         return await theExpense.save();
     }
 

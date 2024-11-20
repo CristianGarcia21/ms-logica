@@ -8,7 +8,9 @@ export default class extends BaseSchema {
       table.increments('id')
 
       table.string('type')
-      table.boolean('state')
+      table.boolean('status')
+      table.integer('user_id').unsigned().references('users.id')
+      table.integer('driver_id').unsigned().references('drivers.id')
 
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL

@@ -32,6 +32,9 @@ public async update({ params, request }: HttpContextContract) {
     const theUser: User = await User.findOrFail(params.id);
     const body = request.body();
     theUser.userId = body.userId;
+    theUser.username = body.username;
+    theUser.email = body.email;
+    theUser.password = body.password;
 
 
     return await theUser.save();

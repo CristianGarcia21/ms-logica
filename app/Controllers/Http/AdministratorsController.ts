@@ -30,6 +30,10 @@ export default class AdministratorsController {
     public async update({ params, request }: HttpContextContract) {
         const theAdministrator: Administrator = await Administrator.findOrFail(params.id);
         const body = request.body();
+        theAdministrator.name = body.name;
+        theAdministrator.status = body.status;
+        theAdministrator.email = body.email;
+        theAdministrator.password = body.password;
         theAdministrator.user_id = body.user_id;
         return await theAdministrator.save();
     }

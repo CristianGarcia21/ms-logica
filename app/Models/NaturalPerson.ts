@@ -3,6 +3,7 @@ import { BaseModel, BelongsTo, column } from '@ioc:Adonis/Lucid/Orm'
 import { belongsTo } from '@ioc:Adonis/Lucid/Orm'
 import Company from './Company'
 import Client from './Client'
+import User from './User'
 
 export default class NaturalPerson extends BaseModel {
   @column({ isPrimary: true })
@@ -20,6 +21,9 @@ export default class NaturalPerson extends BaseModel {
   @column()
   public client_id: number
 
+  @column()
+  public user_id: number
+
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
 
@@ -35,4 +39,9 @@ export default class NaturalPerson extends BaseModel {
     foreignKey: 'client_id'
   })
   public client: BelongsTo<typeof Client>
+
+  @belongsTo(() => User,{
+    foreignKey: 'user_id'
+  })
+  public user: BelongsTo<typeof User>
 }

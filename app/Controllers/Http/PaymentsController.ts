@@ -30,11 +30,12 @@ export default class InstallmentsController {
     public async update({ params, request }: HttpContextContract) {
         const theInstallment: Installment = await Installment.findOrFail(params.id);
         const body = request.body();
-        theInstallment.invoice_id = body.invoice_id;
         theInstallment.amount = body.amount;
         theInstallment.start_date = body.start_date;
         theInstallment.end_date = body.end_date;
         theInstallment.status = body.status;
+        theInstallment.contract_id = body.contract_id;
+        theInstallment.receipt_id = body.receipt_id;
 
         return await theInstallment.save();
     }

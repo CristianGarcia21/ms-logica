@@ -5,8 +5,8 @@ export default class VehicleDriversController {
     public async find({ request, params }: HttpContextContract) {
         if (params.id) {
             let theVehicleDriver: VehicleDriver = await VehicleDriver.findOrFail(params.id)
-            await theVehicleDriver.load("vehicle")
-            await theVehicleDriver.load("driver")
+            // await theVehicleDriver.load("vehicle")
+            // await theVehicleDriver.load("driver")
             return theVehicleDriver;
         } else {
             const data = request.all()
@@ -32,6 +32,7 @@ export default class VehicleDriversController {
         const body = request.body();
         theVehicleDriver.vehicle_id = body.vehicle_id;
         theVehicleDriver.driver_id = body.driver_id;
+        theVehicleDriver.status = body.status;
         return await theVehicleDriver.save();
     }
 

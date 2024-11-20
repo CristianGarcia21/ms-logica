@@ -1,16 +1,29 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema'
 
 export default class extends BaseSchema {
-  protected tableName = 'vehicle_drivers'
+  protected tableName = 'expenses'
 
   public async up () {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
-      table.integer('vehicle_id').unsigned().references('vehicles.id')
+      table.float('amount')
+      table.string('description')
+      table.date('date') 
+      table.integer('owner_id').unsigned().references('owners.id')
+      table.integer('service_id').unsigned().references('services.id')
       table.integer('driver_id').unsigned().references('drivers.id')
-      table.string('status')
+      table.integer('receipt_id').unsigned().references('receipts.id')
+      
+      
+      
 
       
+      
+      
+
+      /**
+       * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
+       */
       table.timestamp('created_at', { useTz: true })
       table.timestamp('updated_at', { useTz: true })
     })

@@ -2,7 +2,7 @@ import { DateTime } from 'luxon'
 import { BaseModel, column, HasMany, hasMany } from '@ioc:Adonis/Lucid/Orm'
 import RestaurantDish from './RestaurantDish'
 
-export default class Restaurant extends BaseModel {
+export default class Dish extends BaseModel {
   @column({ isPrimary: true })
   public id: number
 
@@ -10,14 +10,7 @@ export default class Restaurant extends BaseModel {
   public name: string
 
   @column()
-  public address: string
-
-  @column()
-  public phone: string
-
-  // @column()
-  // public service_id: number
-
+  public description: string
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
@@ -26,7 +19,7 @@ export default class Restaurant extends BaseModel {
   public updatedAt: DateTime
 
   @hasMany(() => RestaurantDish, {
-    foreignKey: 'restaurant_id'
+    foreignKey: 'dish_id'
   })
   public restaurantDish: HasMany<typeof RestaurantDish>
 }

@@ -25,12 +25,12 @@ export default class Invoice extends BaseModel {
   public updatedAt: DateTime
 
   @hasOne(() => Payment,{
-    foreignKey:'payment_id'
+    foreignKey:'receipt_id'
   })
   public payment : HasOne <typeof Payment>
 
   @hasOne(() => Expense,{
-    foreignKey:'expense_id'
+    foreignKey:'receipt_id'
   })
   public expense : HasOne <typeof Expense>
 

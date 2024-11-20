@@ -34,6 +34,7 @@ export default class DriversController {
         theDriver.name = body.name;
         theDriver.email = body.email;
         theDriver.status = body.status;
+        theDriver.user_id = body.user_id;
 
         return await theDriver.save();
     }

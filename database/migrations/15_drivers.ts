@@ -7,7 +7,10 @@ export default class extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
       table.string('license')
-      table.boolean('state')
+      table.string('name')
+      table.string('email')
+      table.string('status')
+      table.integer('user_id').unsigned().references('users.id')
 
      
       table.timestamp('created_at', { useTz: true })

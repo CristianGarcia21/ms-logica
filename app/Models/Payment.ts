@@ -1,14 +1,11 @@
 import { DateTime } from 'luxon'
-import { BaseModel, BelongsTo, belongsTo, column, HasOne, hasOne } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, BelongsTo, belongsTo, column } from '@ioc:Adonis/Lucid/Orm'
 import Contract from './Contract'
 import Receipt from './Receipt'
 
 export default class Installment extends BaseModel {
   @column({ isPrimary: true })
   public id: number
-
-  @column()
-  public invoice_id: number
 
   @column()
   public amount: number
@@ -25,6 +22,9 @@ export default class Installment extends BaseModel {
   @column()
   public contract_id: number
 
+  @column()
+  public receipt_id: number
+
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
 
@@ -36,8 +36,8 @@ export default class Installment extends BaseModel {
   })
   public contract: BelongsTo<typeof Contract>
 
-  @hasOne(() => Receipt, {
-    foreignKey: 'installment_id'
+  @belongsTo(() => Receipt, {
+    foreignKey: 'receipt_id'
   })
-  public receipt: HasOne<typeof Receipt>
+  public receipt: BelongsTo<typeof Receipt>
 }
