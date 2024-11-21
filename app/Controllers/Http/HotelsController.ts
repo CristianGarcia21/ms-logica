@@ -1,42 +1,56 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import Hotel from 'App/Models/Hotel';
+import Hotel from 'App/Models/Hotel'
+import HotelValidator from 'App/Validators/HotelValidator'
 
 export default class HotelsController {
-    public async find({ request, params }: HttpContextContract) {
-        if (params.id) {
-            let theHotel: Hotel = await Hotel.findOrFail(params.id)
-            return theHotel;
-        } else {
-            const data = request.all()
-            if ("page" in data && "per_page" in data) {
-                const page = request.input('page', 1);
-                const perPage = request.input("per_page", 20);
-                return await Hotel.query().paginate(page, perPage)
-            } else {
-                return await Hotel.query()
-            }
-    
-        }
+  /**
+   * Encuentra un hotel por ID o lista todos los hoteles con paginación.
+   */
+  public async find({ request, params }: HttpContextContract) {
+    if (params.id) {
+      const theHotel: Hotel = await Hotel.findOrFail(params.id)
+      await theHotel.load('service') // Carga la relación con el servicio
+      return theHotel
+    } else {
+      const data = request.all()
+      if ('page' in data && 'per_page' in data) {
+        const page = request.input('page', 1)
+        const perPage = request.input('per_page', 20)
+        return await Hotel.query().paginate(page, perPage)
+      } else {
+        return await Hotel.query()
+      }
     }
+  }
 
-    public async create({ request }: HttpContextContract) {
-        const body = request.body();
-        const theHotel: Hotel = await Hotel.create(body);
-        return theHotel;
-    }
+  /**
+   * Crea un nuevo hotel.
+   */
+  public async create({ request }: HttpContextContract) {
+    // Validar la entrada con el validador de hoteles
+    const payload = await request.validate(HotelValidator)
+    const theHotel: Hotel = await Hotel.create(payload)
+    return theHotel
+  }
 
-    public async update({ params, request }: HttpContextContract) {
-        const theHotel: Hotel = await Hotel.findOrFail(params.id);
-        const body = request.body();
-        theHotel.service_id = body.service_id;
-        return await theHotel.save();
-    }
+  /**
+   * Actualiza un hotel existente.
+   */
+  public async update({ params, request }: HttpContextContract) {
+    // Validar la entrada con el validador de hoteles
+    const payload = await request.validate(HotelValidator)
+    const theHotel: Hotel = await Hotel.findOrFail(params.id)
+    theHotel.merge(payload) // Actualizar campos validados
+    await theHotel.save()
+    return theHotel
+  }
 
-    public async delete({ params, response }: HttpContextContract) {
-        const theHotel: Hotel = await Hotel.findOrFail(params.id);
-            response.status(204);
-            return await theHotel.delete();
-    }
-
-
+  /**
+   * Elimina un hotel por ID.
+   */
+  public async delete({ params, response }: HttpContextContract) {
+    const theHotel: Hotel = await Hotel.findOrFail(params.id)
+    await theHotel.delete()
+    return response.noContent()
+  }
 }

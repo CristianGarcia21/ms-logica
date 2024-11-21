@@ -1,44 +1,61 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import Category from 'App/Models/Category';
+import Category from 'App/Models/Category'
+import CategoryValidator from 'App/Validators/CategoryValidator'
 
 export default class CategoriesController {
-    public async find({ request, params }: HttpContextContract) {
-        if (params.id) {
-            let theCategory: Category = await Category.findOrFail(params.id)
-            await theCategory.load("subcategory")
-            await theCategory.load("parentCategory")
-            return theCategory;
-        } else {
-            const data = request.all()
-            if ("page" in data && "per_page" in data) {
-                const page = request.input('page', 1);
-                const perPage = request.input("per_page", 20);
-                return await Category.query().paginate(page, perPage)
-            } else {
-                return await Category.query()
-            }
-
-        }
-
+  /**
+   * Encuentra una categoría o lista todas las categorías con paginación.
+   */
+  public async find({ request, params }: HttpContextContract) {
+    if (params.id) {
+      const category = await Category.findOrFail(params.id)
+      await category.load('subcategory')
+      await category.load('parentCategory')
+      return category
+    } else {
+      const data = request.all()
+      if ('page' in data && 'per_page' in data) {
+        const page = request.input('page', 1)
+        const perPage = request.input('per_page', 20)
+        return await Category.query().paginate(page, perPage)
+      } else {
+        return await Category.query()
+      }
     }
-    public async create({ request }: HttpContextContract) {
-        // await request.validate(CategoryValidator)
-        const body = request.body();
-        const theCategory: Category = await Category.create(body);
-        return theCategory;
-    }
+  }
 
-    public async update({ params, request }: HttpContextContract) {
-        const theCategory: Category = await Category.findOrFail(params.id);
-        const body = request.body();
-        theCategory.name = body.name;
-        theCategory.parent_id = body.parent_id
-        return await theCategory.save();
-    }
+  /**
+   * Crea una nueva categoría.
+   */
+  public async create({ request }: HttpContextContract) {
+    // Validar los datos con el validador
+    const payload = await request.validate(CategoryValidator)
+    const category = await Category.create(payload)
+    return category
+  }
 
-    public async delete({ params, response }: HttpContextContract) {
-        const theCategory: Category = await Category.findOrFail(params.id);
-            response.status(204);
-            return await theCategory.delete();
-    }
+  /**
+   * Actualiza una categoría existente.
+   */
+  public async update({ params, request }: HttpContextContract) {
+    // Validar los datos con el validador
+    const payload = await request.validate(CategoryValidator)
+
+    // Buscar la categoría por ID
+    const category = await Category.findOrFail(params.id)
+
+    // Actualizar los campos
+    category.merge(payload)
+    await category.save()
+    return category
+  }
+
+  /**
+   * Elimina una categoría.
+   */
+  public async delete({ params, response }: HttpContextContract) {
+    const category = await Category.findOrFail(params.id)
+    await category.delete()
+    return response.noContent()
+  }
 }

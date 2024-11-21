@@ -1,45 +1,56 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import Contract from 'App/Models/Contract';
-import ContractValidator from 'App/Validators/ContractValidator';
+import Contract from 'App/Models/Contract'
+import ContractValidator from 'App/Validators/ContractValidator'
 
 export default class ContractsController {
+  /**
+   * Encuentra un contrato por ID o lista todos los contratos con paginación.
+   */
   public async find({ request, params }: HttpContextContract) {
     if (params.id) {
-        let theContract: Contract = await Contract.findOrFail(params.id)
-        return theContract;
+      const contract = await Contract.findOrFail(params.id)
+      await contract.load('client') // Cargar cliente relacionado
+      await contract.load('route') // Cargar rutas relacionadas
+      await contract.load('payment') // Cargar pagos relacionados
+      return contract
     } else {
-        const data = request.all()
-        if ("page" in data && "per_page" in data) {
-            const page = request.input('page', 1);
-            const perPage = request.input("per_page", 20);
-            return await Contract.query().paginate(page, perPage)
-        } else {
-            return await Contract.query()
-        }
-
+      const data = request.all()
+      if ('page' in data && 'per_page' in data) {
+        const page = request.input('page', 1)
+        const perPage = request.input('per_page', 20)
+        return await Contract.query().paginate(page, perPage)
+      } else {
+        return await Contract.query()
+      }
     }
+  }
 
-}
-public async create({ request }: HttpContextContract) {
-    await request.validate(ContractValidator)
-    const body = request.body();
-    const theContract: Contract = await Contract.create(body);
-    return theContract;
-}
+  /**
+   * Crea un nuevo contrato.
+   */
+  public async create({ request }: HttpContextContract) {
+    const payload = await request.validate(ContractValidator) // Validar datos de entrada
+    const contract = await Contract.create(payload)
+    return contract
+  }
 
-public async update({ params, request }: HttpContextContract) {
-    const theContract: Contract = await Contract.findOrFail(params.id);
-    const body = request.body();
-    theContract.start_date = body.start_date;
-    theContract.end_date = body.end_date;
-    theContract.amount = body.amount;
-    theContract.estate = body.estate;
-    return await theContract.save();
-}
+  /**
+   * Actualiza un contrato existente.
+   */
+  public async update({ params, request }: HttpContextContract) {
+    const payload = await request.validate(ContractValidator) // Validar datos de entrada
+    const contract = await Contract.findOrFail(params.id)
+    contract.merge(payload) // Actualizar datos validados
+    await contract.save()
+    return contract
+  }
 
-public async delete({ params, response }: HttpContextContract) {
-    const theContract: Contract = await Contract.findOrFail(params.id);
-        response.status(204);
-        return await theContract.delete();
-}
+  /**
+   * Elimina un contrato por ID.
+   */
+  public async delete({ params, response }: HttpContextContract) {
+    const contract = await Contract.findOrFail(params.id)
+    await contract.delete()
+    return response.noContent()
+  }
 }

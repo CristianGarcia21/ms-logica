@@ -1,48 +1,61 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import Product from 'App/Models/Product';
+import Product from 'App/Models/Product'
+import ProductValidator from 'App/Validators/ProductValidator'
 
 export default class ProductsController {
-    public async find({ request, params }: HttpContextContract) {
-        if (params.id) {
-            let theProduct: Product = await Product.findOrFail(params.id)
-            // CUando se visualice un solo producto, aparecerá el lote
-            await theProduct.load('lot')
-            return theProduct;
-        } else {
-            const data = request.all()
-            if ("page" in data && "per_page" in data) {
-                const page = request.input('page', 1);
-                const perPage = request.input("per_page", 20);
-                return await Product.query().paginate(page, perPage)
-            } else {
-                return await Product.query()
-            }
-
-        }
-
+  /**
+   * Encuentra un producto o lista todos los productos con paginación.
+   */
+  public async find({ request, params }: HttpContextContract) {
+    if (params.id) {
+      const product = await Product.findOrFail(params.id)
+      // Cuando se visualiza un solo producto, cargar el lote relacionado
+      await product.load('lot')
+      return product
+    } else {
+      const data = request.all()
+      if ('page' in data && 'per_page' in data) {
+        const page = request.input('page', 1)
+        const perPage = request.input('per_page', 20)
+        return await Product.query().paginate(page, perPage)
+      } else {
+        return await Product.query()
+      }
     }
-    public async create({ request }: HttpContextContract) {
-        // await request.validate(ProductValidator)
-        const body = request.body();
-        const theProduct: Product = await Product.create(body);
-        return theProduct;
-    }
+  }
 
-    public async update({ params, request }: HttpContextContract) {
-        const theProduct: Product = await Product.findOrFail(params.id);
-        const body = request.body();
-        theProduct.description = body.name;
-        theProduct.weight = body.name;
-        theProduct.size = body.name;
-        theProduct.type = body.name;
-        theProduct.lot_id = body.lot_id;
-        theProduct.client_id = body.client_id
-        return await theProduct.save();
-    }
+  /**
+   * Crea un nuevo producto.
+   */
+  public async create({ request }: HttpContextContract) {
+    // Validar los datos con el validador
+    const payload = await request.validate(ProductValidator)
+    const product = await Product.create(payload)
+    return product
+  }
 
-    public async delete({ params, response }: HttpContextContract) {
-        const theProduct: Product = await Product.findOrFail(params.id);
-            response.status(204);
-            return await theProduct.delete();
-    }
+  /**
+   * Actualiza un producto existente.
+   */
+  public async update({ params, request }: HttpContextContract) {
+    // Validar los datos con el validador
+    const payload = await request.validate(ProductValidator)
+
+    // Buscar el producto por ID
+    const product = await Product.findOrFail(params.id)
+
+    // Actualizar los campos
+    product.merge(payload)
+    await product.save()
+    return product
+  }
+
+  /**
+   * Elimina un producto.
+   */
+  public async delete({ params, response }: HttpContextContract) {
+    const product = await Product.findOrFail(params.id)
+    await product.delete()
+    return response.noContent()
+  }
 }

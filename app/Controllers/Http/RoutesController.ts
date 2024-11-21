@@ -1,44 +1,57 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import Route from 'App/Models/Route';
+import Route from 'App/Models/Route'
+import RouteValidator from 'App/Validators/RouteValidator'
 
 export default class RoutesController {
-    public async find({ request, params }: HttpContextContract) {
-        if (params.id) {
-            let theRoute: Route = await Route.findOrFail(params.id)
-            await theRoute.load("contract")
-            await theRoute.load("vehicle")
-            return theRoute;
-        } else {
-            const data = request.all()
-            if ("page" in data && "per_page" in data) {
-                const page = request.input('page', 1);
-                const perPage = request.input("per_page", 20);
-                return await Route.query().paginate(page, perPage)
-            } else {
-                return await Route.query()
-            }
-
-        }
-
+  /**
+   * Encuentra una ruta por ID o lista todas las rutas con paginación.
+   */
+  public async find({ request, params }: HttpContextContract) {
+    if (params.id) {
+      const route = await Route.findOrFail(params.id)
+      await route.load('contract') // Cargar contrato relacionado
+      await route.load('vehicle') // Cargar vehículo relacionado
+      await route.load('lot') // Cargar lotes relacionados
+      await route.load('stage') // Cargar etapas relacionadas
+      return route
+    } else {
+      const data = request.all()
+      if ('page' in data && 'per_page' in data) {
+        const page = request.input('page', 1)
+        const perPage = request.input('per_page', 20)
+        return await Route.query().paginate(page, perPage)
+      } else {
+        return await Route.query()
+      }
     }
-    public async create({ request }: HttpContextContract) {
-        // await request.validate(RouteValidator)
-        const body = request.body();
-        const theRoute: Route = await Route.create(body);
-        return theRoute;
-    }
+  }
 
-    public async update({ params, request }: HttpContextContract) {
-        const theRoute: Route = await Route.findOrFail(params.id);
-        const body = request.body();
-        theRoute.contract_id = body.contract_id;
-        theRoute.vehicle_id = body.vehicle_id;
-        return await theRoute.save();
-    }
+  /**
+   * Crea una nueva ruta.
+   */
+  public async create({ request }: HttpContextContract) {
+    const payload = await request.validate(RouteValidator)
+    const route = await Route.create(payload)
+    return route
+  }
 
-    public async delete({ params, response }: HttpContextContract) {
-        const theRoute: Route = await Route.findOrFail(params.id);
-            response.status(204);
-            return await theRoute.delete();
-    }
+  /**
+   * Actualiza una ruta existente.
+   */
+  public async update({ params, request }: HttpContextContract) {
+    const payload = await request.validate(RouteValidator)
+    const route = await Route.findOrFail(params.id)
+    route.merge(payload)
+    await route.save()
+    return route
+  }
+
+  /**
+   * Elimina una ruta por ID.
+   */
+  public async delete({ params, response }: HttpContextContract) {
+    const route = await Route.findOrFail(params.id)
+    await route.delete()
+    return response.noContent()
+  }
 }

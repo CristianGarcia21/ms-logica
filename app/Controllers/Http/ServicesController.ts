@@ -1,42 +1,55 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import Service from 'App/Models/Service';
+import Service from 'App/Models/Service'
+import ServiceValidator from 'App/Validators/ServiceValidator'
 
 export default class ServicesController {
-    public async find({ request, params }: HttpContextContract) {
-        if (params.id) {
-            let theService: Service = await Service.findOrFail(params.id)
-            return theService;
-        } else {
-            const data = request.all()
-            if ("page" in data && "per_page" in data) {
-                const page = request.input('page', 1);
-                const perPage = request.input("per_page", 20);
-                return await Service.query().paginate(page, perPage)
-            } else {
-                return await Service.query()
-            }
-    
-        }
+  /**
+   * Encuentra un servicio por ID o lista todos los servicios con paginación.
+   */
+  public async find({ request, params }: HttpContextContract) {
+    if (params.id) {
+      const service = await Service.findOrFail(params.id)
+      await service.load('expense') // Cargar gastos relacionados
+      await service.load('administrator') // Cargar el administrador relacionado
+      return service
+    } else {
+      const data = request.all()
+      if ('page' in data && 'per_page' in data) {
+        const page = request.input('page', 1)
+        const perPage = request.input('per_page', 20)
+        return await Service.query().paginate(page, perPage)
+      } else {
+        return await Service.query()
+      }
     }
+  }
 
-    public async create({ request }: HttpContextContract) {
-        const body = request.body();
-        const theService: Service = await Service.create(body);
-        return theService;
-    }
+  /**
+   * Crea un nuevo servicio.
+   */
+  public async create({ request }: HttpContextContract) {
+    const payload = await request.validate(ServiceValidator)
+    const service = await Service.create(payload)
+    return service
+  }
 
-    public async update({ params, request }: HttpContextContract) {
-        const theService: Service = await Service.findOrFail(params.id);
-        const body = request.body();
-        theService.administrator_id= body.administrator_id;
-        return await theService.save();
-    }
+  /**
+   * Actualiza un servicio existente.
+   */
+  public async update({ params, request }: HttpContextContract) {
+    const payload = await request.validate(ServiceValidator)
+    const service = await Service.findOrFail(params.id)
+    service.merge(payload)
+    await service.save()
+    return service
+  }
 
-    public async delete({ params, response }: HttpContextContract) {
-        const theService: Service = await Service.findOrFail(params.id);
-            response.status(204);
-            return await theService.delete();
-    }
-
-
+  /**
+   * Elimina un servicio por ID.
+   */
+  public async delete({ params, response }: HttpContextContract) {
+    const service = await Service.findOrFail(params.id)
+    await service.delete()
+    return response.noContent()
+  }
 }

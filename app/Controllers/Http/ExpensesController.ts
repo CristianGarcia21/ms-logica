@@ -1,47 +1,58 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import Expense from 'App/Models/Expense';
+import Expense from 'App/Models/Expense'
+import ExpenseValidator from 'App/Validators/ExpenseValidator'
 
 export default class ExpensesController {
-    public async find({ request, params }: HttpContextContract) {
-        if (params.id) {
-            let theExpense: Expense = await Expense.findOrFail(params.id)
-            return theExpense;
-        } else {
-            const data = request.all()
-            if ("page" in data && "per_page" in data) {
-                const page = request.input('page', 1);
-                const perPage = request.input("per_page", 20);
-                return await Expense.query().paginate(page, perPage)
-            } else {
-                return await Expense.query()
-            }
-    
-        }
+  /**
+   * Encuentra un gasto por ID o lista todos los gastos con paginación.
+   */
+  public async find({ request, params }: HttpContextContract) {
+    if (params.id) {
+      const theExpense: Expense = await Expense.findOrFail(params.id)
+      // Cargar relaciones relevantes
+      await theExpense.load('service')
+      await theExpense.load('driver')
+      await theExpense.load('owner')
+      await theExpense.load('receipt')
+      return theExpense
+    } else {
+      const data = request.all()
+      if ('page' in data && 'per_page' in data) {
+        const page = request.input('page', 1)
+        const perPage = request.input('per_page', 20)
+        return await Expense.query().paginate(page, perPage)
+      } else {
+        return await Expense.query()
+      }
     }
+  }
 
-    public async create({ request }: HttpContextContract) {
-        const body = request.body();
-        const theExpense: Expense = await Expense.create(body);
-        return theExpense;
-    }
+  /**
+   * Crea un nuevo gasto.
+   */
+  public async create({ request }: HttpContextContract) {
+    const payload = await request.validate(ExpenseValidator)
+    const theExpense: Expense = await Expense.create(payload)
+    return theExpense
+  }
 
-    public async update({ params, request }: HttpContextContract) {
-        const theExpense: Expense = await Expense.findOrFail(params.id);
-        const body = request.body();
-        theExpense.amount = body.amount;
-        theExpense.description = body.description;
-        theExpense.date = body.date;
-        theExpense.owner_id = body.owner_id;
-        theExpense.service_id = body.service_id;
-        return await theExpense.save();
-    }
+  /**
+   * Actualiza un gasto existente.
+   */
+  public async update({ params, request }: HttpContextContract) {
+    const theExpense: Expense = await Expense.findOrFail(params.id)
+    const payload = await request.validate(ExpenseValidator)
+    theExpense.merge(payload)
+    await theExpense.save()
+    return theExpense
+  }
 
-    public async delete({ params, response }: HttpContextContract) {
-        const theExpense: Expense = await Expense.findOrFail(params.id);
-            response.status(204);
-            return await theExpense.delete();
-    }
-    
-
-
+  /**
+   * Elimina un gasto por ID.
+   */
+  public async delete({ params, response }: HttpContextContract) {
+    const theExpense: Expense = await Expense.findOrFail(params.id)
+    await theExpense.delete()
+    return response.noContent()
+  }
 }

@@ -1,47 +1,55 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import Invoice from 'App/Models/Receipt';
+import Receipt from 'App/Models/Receipt'
+import ReceiptValidator from 'App/Validators/ReceiptValidator'
 
-export default class InvoicesContollersController {
-    public async find({ request, params }: HttpContextContract) {
-        if (params.id) {
-            let theInvoice: Invoice = await Invoice.findOrFail(params.id)
-            //await theInvoice.load("")
-            return theInvoice;
-        } else {
-            const data = request.all()
-            if ("page" in data && "per_page" in data) {
-                const page = request.input('page', 1);
-                const perPage = request.input("per_page", 20);
-                return await Invoice.query().paginate(page, perPage)
-            }else {
-                return await Invoice.query()
-            }
-    
-        }
+export default class ReceiptsController {
+  /**
+   * Encuentra un recibo por ID o lista todos los recibos con paginación.
+   */
+  public async find({ request, params }: HttpContextContract) {
+    if (params.id) {
+      const receipt = await Receipt.findOrFail(params.id)
+      await receipt.load('payment') // Cargar pagos relacionados
+      await receipt.load('expense') // Cargar gastos relacionados
+      return receipt
+    } else {
+      const data = request.all()
+      if ('page' in data && 'per_page' in data) {
+        const page = request.input('page', 1)
+        const perPage = request.input('per_page', 20)
+        return await Receipt.query().paginate(page, perPage)
+      } else {
+        return await Receipt.query()
+      }
     }
+  }
 
-    public async create({ request }: HttpContextContract) {
-        // await request.validate(InvoiceValidator)
-        const body = request.body();
-        const theInvoice: Invoice = await Invoice.create(body);
-        return theInvoice;
-    }
+  /**
+   * Crea un nuevo recibo.
+   */
+  public async create({ request }: HttpContextContract) {
+    const payload = await request.validate(ReceiptValidator) // Validar datos de entrada
+    const receipt = await Receipt.create(payload)
+    return receipt
+  }
 
-    public async update({ params, request }: HttpContextContract) {
-        const theInvoice: Invoice = await Invoice.findOrFail(params.id);
-        const body = request.body();
-        theInvoice.customer_id = body.customer_id;
-        theInvoice.total_amount = body.amount;
-        theInvoice.status = body.status;
+  /**
+   * Actualiza un recibo existente.
+   */
+  public async update({ params, request }: HttpContextContract) {
+    const payload = await request.validate(ReceiptValidator) // Validar datos de entrada
+    const receipt = await Receipt.findOrFail(params.id)
+    receipt.merge(payload) // Actualizar datos validados
+    await receipt.save()
+    return receipt
+  }
 
-        return await theInvoice.save();
-    }
-
-    public async delete({ params, response }: HttpContextContract) {
-        const theInvoice: Invoice = await Invoice.findOrFail(params.id);
-            response.status(204);
-            return await theInvoice.delete();
-    }
-
-
+  /**
+   * Elimina un recibo por ID.
+   */
+  public async delete({ params, response }: HttpContextContract) {
+    const receipt = await Receipt.findOrFail(params.id)
+    await receipt.delete()
+    return response.noContent()
+  }
 }

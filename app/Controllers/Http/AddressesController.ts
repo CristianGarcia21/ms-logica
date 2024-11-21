@@ -1,47 +1,54 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import Address from 'App/Models/Address';
+import Address from 'App/Models/Address'
+import AddressValidator from 'App/Validators/AddressValidator'
 
 export default class AddressesController {
-    public async find({ request, params }: HttpContextContract) {
-        if (params.id) {
-            let theAddress: Address = await Address.findOrFail(params.id)
-            // await theAddress.load("product")
-            return theAddress;
-        } else {
-            const data = request.all()
-            if ("page" in data && "per_page" in data) {
-                const page = request.input('page', 1);
-                const perPage = request.input("per_page", 20);
-                return await Address.query().paginate(page, perPage)
-            } else {
-                return await Address.query()
-            }
-
-        }
-
+  /**
+   * Encuentra una dirección por ID o lista todas las direcciones con paginación.
+   */
+  public async find({ request, params }: HttpContextContract) {
+    if (params.id) {
+      const address = await Address.findOrFail(params.id)
+      await address.load('municipalities') // Cargar municipio relacionado
+      return address
+    } else {
+      const data = request.all()
+      if ('page' in data && 'per_page' in data) {
+        const page = request.input('page', 1)
+        const perPage = request.input('per_page', 20)
+        return await Address.query().paginate(page, perPage)
+      } else {
+        return await Address.query()
+      }
     }
-    public async create({ request }: HttpContextContract) {
-        // await request.validate(AddressValidator)
-        const body = request.body();
-        const theAddress: Address = await Address.create(body);
-        return theAddress;
-    }
+  }
 
-    public async update({ params, request }: HttpContextContract) {
-        const theAddress: Address = await Address.findOrFail(params.id);
-        const body = request.body();
-        theAddress.street = body.street;
-        theAddress.number = body.number;
-        theAddress.neighborhood = body.neighborhood;
-        theAddress.department = body.department;
-        theAddress.municipality_id = body.city;
-        
-        return await theAddress.save();
-    }
+  /**
+   * Crea una nueva dirección.
+   */
+  public async create({ request }: HttpContextContract) {
+    const payload = await request.validate(AddressValidator) // Validar los datos de entrada
+    const address = await Address.create(payload)
+    return address
+  }
 
-    public async delete({ params, response }: HttpContextContract) {
-        const theAddress: Address = await Address.findOrFail(params.id);
-            response.status(204);
-            return await theAddress.delete();
-    }
+  /**
+   * Actualiza una dirección existente.
+   */
+  public async update({ params, request }: HttpContextContract) {
+    const payload = await request.validate(AddressValidator) // Validar los datos de entrada
+    const address = await Address.findOrFail(params.id)
+    address.merge(payload) // Actualizar los campos validados
+    await address.save()
+    return address
+  }
+
+  /**
+   * Elimina una dirección por ID.
+   */
+  public async delete({ params, response }: HttpContextContract) {
+    const address = await Address.findOrFail(params.id)
+    await address.delete()
+    return response.noContent()
+  }
 }
