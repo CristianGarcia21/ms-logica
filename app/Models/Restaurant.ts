@@ -1,6 +1,7 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column, HasMany, hasMany } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, BelongsTo, belongsTo, column, HasMany, hasMany } from '@ioc:Adonis/Lucid/Orm'
 import RestaurantDish from './RestaurantDish'
+import Service from './Service'
 
 export default class Restaurant extends BaseModel {
   @column({ isPrimary: true })
@@ -15,8 +16,8 @@ export default class Restaurant extends BaseModel {
   @column()
   public phone: string
 
-  // @column()
-  // public service_id: number
+  @column()
+  public service_id: number
 
 
   @column.dateTime({ autoCreate: true })
@@ -29,4 +30,10 @@ export default class Restaurant extends BaseModel {
     foreignKey: 'restaurant_id'
   })
   public restaurantDish: HasMany<typeof RestaurantDish>
+
+  @belongsTo(() => Service, {
+    foreignKey: 'service_id'
+  })
+  public service: BelongsTo<typeof Service>
+
 }

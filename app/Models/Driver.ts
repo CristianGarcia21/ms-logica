@@ -4,6 +4,7 @@ import Owner from './Owner'
 import User from './User'
 import Expense from './Expense'
 import VehicleDriver from './VehicleDriver'
+import Shift from './Shift'
 
 export default class Driver extends BaseModel {
   @column({ isPrimary: true })
@@ -44,6 +45,11 @@ export default class Driver extends BaseModel {
     foreignKey: 'driver_id'
   })
   public expense: HasMany<typeof Expense>
+
+  @hasMany(() => Shift, {
+    foreignKey: 'driver_id'
+  })
+  public shift: HasMany<typeof Shift>
 
   @hasMany(() => VehicleDriver, {
     foreignKey: 'driver_id'

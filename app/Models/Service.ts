@@ -1,5 +1,5 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column, HasMany, hasMany, HasOne, hasOne } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, BelongsTo, belongsTo, column, HasMany, hasMany, HasOne, hasOne } from '@ioc:Adonis/Lucid/Orm'
 import Expense from './Expense'
 import Administrator from './Administrator'
 import Hotel from './Hotel'
@@ -36,10 +36,10 @@ export default class Service extends BaseModel {
   })
   public expense: HasMany<typeof Expense>;
 
-  @hasOne(() => Administrator, {
-    foreignKey: "service_id",
+  @belongsTo(() => Administrator, {
+    foreignKey: "administrator_id",
   })
-  public administrator: HasOne<typeof Administrator>;
+  public administrator: BelongsTo<typeof Administrator>;
 
   @hasOne(() => Hotel, {
     foreignKey: "service_id",

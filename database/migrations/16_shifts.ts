@@ -7,11 +7,10 @@ export default class extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
       table.integer('driver_id').unsigned().references('drivers.id')
-      table.integer('vehicle_id').unsigned().references('vehicles.id')
+      table.date('start_time')
+      table.date('end_time')
       table.integer('start_mileage')
       table.integer('end_mileage')
-      table.integer('start_time')
-      table.integer('end_time')
 
       
       table.timestamp('created_at', { useTz: true })

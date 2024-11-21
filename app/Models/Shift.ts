@@ -1,5 +1,6 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, BelongsTo, belongsTo, column } from '@ioc:Adonis/Lucid/Orm'
+import Driver from './Driver'
 
 export default class Shift extends BaseModel {
   @column({ isPrimary: true })
@@ -7,9 +8,6 @@ export default class Shift extends BaseModel {
 
   @column()
   public driver_id: number
-
-  @column()
-  public vehicle_id: number
 
   @column()
   public start_time: DateTime
@@ -29,4 +27,10 @@ export default class Shift extends BaseModel {
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   public updatedAt: DateTime
+
+  @belongsTo(() => Driver, {
+    foreignKey: 'driver_id'
+  })
+  public driver: BelongsTo<typeof Driver>
+
 }

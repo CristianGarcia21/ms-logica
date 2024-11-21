@@ -11,6 +11,7 @@ export default class extends BaseSchema {
       table.float('amount')
       table.boolean('estate')
       table.integer('client_id').unsigned().references('clients.id')
+      
       table.timestamp('created_at', { useTz: true })
       table.timestamp('updated_at', { useTz: true })
     })

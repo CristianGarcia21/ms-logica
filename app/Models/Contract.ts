@@ -2,7 +2,7 @@ import { DateTime } from 'luxon'
 import { BaseModel, BelongsTo, belongsTo, column, HasMany, hasMany } from '@ioc:Adonis/Lucid/Orm'
 import Client from './Client'
 import Route from './Route'
-import Installment from './Payment'
+import Payment from './Payment'
 
 export default class Contract extends BaseModel {
   @column({ isPrimary: true })
@@ -40,8 +40,8 @@ export default class Contract extends BaseModel {
   })
   public route: HasMany<typeof Route>
 
-  @hasMany(() => Installment,{
+  @hasMany(() => Payment,{
     foreignKey: 'contract_id'
   })
-  public installment: HasMany<typeof Installment>
+  public payment: HasMany<typeof Payment>
 }
