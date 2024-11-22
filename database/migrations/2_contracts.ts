@@ -8,7 +8,7 @@ export default class extends BaseSchema {
       table.increments('id')
       table.date('start_date')
       table.date('end_date')
-      table.float('amount')
+      table.integer('amount')
       table.boolean('estate')
       table.integer('client_id').unsigned().references('clients.id')
       
