@@ -1,5 +1,6 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Contract from 'App/Models/Contract'
+import NotificationService from 'App/Services/NotificationService'
 import ContractValidator from 'App/Validators/ContractValidator'
 
 export default class ContractsController {
@@ -31,6 +32,16 @@ export default class ContractsController {
   public async create({ request }: HttpContextContract) {
     const payload = await request.validate(ContractValidator) // Validar datos de entrada
     const contract = await Contract.create(payload)
+
+    // Enviar correo electrónico
+    const notificationService = new NotificationService()
+    const emailData = {
+      subject: 'Nuevo Contrato Creado',
+      recipient: 'destinatario@example.com', // Cambia esto por el correo del destinatario real
+      body_html: `<p>Se ha creado un nuevo contrato con ID: ${contract.id}</p>`
+    }
+    await notificationService.sendEmail(emailData)
+
     return contract
   }
 
