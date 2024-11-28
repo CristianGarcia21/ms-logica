@@ -16,6 +16,7 @@ export default class ContractValidator {
     amount: schema.number([
       rules.required(),
       rules.unsigned(), // Asegura que el monto sea positivo
+      rules.range(0, 100000)
     ]),
     estate: schema.boolean([
       rules.required(), // Asegura que sea un booleano (true o false)

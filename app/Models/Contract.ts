@@ -8,10 +8,10 @@ export default class Contract extends BaseModel {
   @column({ isPrimary: true })
   public id: number
 
-  @column()
+  @column.date()
   public start_date : DateTime
 
-  @column()
+  @column.date()
   public end_date : DateTime
 
   @column()
