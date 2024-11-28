@@ -1,9 +1,14 @@
 import axios from 'axios'
+import dotenv from 'dotenv'
+
+dotenv.config()
 
 class UserService {
   public async fetchUserData(token: string) {
+    const baseUrl = process.env.SECURITY_SERVICE_URL
+    const url = `${baseUrl}/api/users`
     try {
-      const response = await axios.get('http://localhost:8080/api/users', {
+      const response = await axios.get(url, {
         headers: {
           Authorization: token,
         },
