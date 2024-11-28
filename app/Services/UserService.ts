@@ -5,7 +5,7 @@ dotenv.config()
 
 class UserService {
   public async fetchUserData(token: string) {
-    const baseUrl = process.env.SECURITY_SERVICE_URL
+    const baseUrl = process.env.MS_SECURITY
     const url = `${baseUrl}/api/users`
     try {
       const response = await axios.get(url, {
