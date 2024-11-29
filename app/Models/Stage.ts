@@ -2,6 +2,7 @@ import { DateTime } from 'luxon'
 import { BaseModel, BelongsTo, belongsTo, column } from '@ioc:Adonis/Lucid/Orm'
 import Route from './Route'
 import Address from './Address'
+import Lot from './Lot'
 
 // Representa las distintas etapas que puede tener una ruta.
 // Una etapa se da entre una dirección de un centro logístico y otro.
@@ -19,6 +20,9 @@ export default class Stage extends BaseModel {
   @column()
   public route_id: number
 
+  @column()
+  public lot_id: number
+
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
 
@@ -34,4 +38,9 @@ export default class Stage extends BaseModel {
     foreignKey: 'address_id'
   })
   public address: BelongsTo<typeof Address>
+
+  @belongsTo(() => Lot, {
+    foreignKey: 'lot_id'
+  })
+  public lot: BelongsTo<typeof Lot>
 }

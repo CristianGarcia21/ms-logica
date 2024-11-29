@@ -10,10 +10,10 @@ export default class Payment extends BaseModel {
   @column()
   public amount: number
 
-  @column()
+  @column.date()
   public start_date: DateTime
 
-  @column()
+  @column.date()
   public end_date: DateTime
 
   @column()

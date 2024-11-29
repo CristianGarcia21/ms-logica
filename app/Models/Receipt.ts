@@ -4,7 +4,7 @@ import Payment from './Payment'
 import Expense from './Expense'
 
 
-export default class Invoice extends BaseModel {
+export default class Receipt extends BaseModel {
   @column({ isPrimary: true })
   public id: number
 

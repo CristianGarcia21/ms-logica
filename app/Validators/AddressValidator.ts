@@ -15,7 +15,7 @@ export default class AddressValidator {
     department: schema.string({ trim: true }, [
       rules.required(),
     ]),
-    municipality_id: schema.string({ trim: true }, [
+    municipality_id: schema.number([
       rules.required(),
       rules.exists({ table: 'municipalities', column: 'id' }), // Ajustado para aceptar string como ID
     ]),
