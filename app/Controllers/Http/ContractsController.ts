@@ -37,7 +37,7 @@ export default class ContractsController {
     const notificationService = new NotificationService()
     const emailData = {
       subject: 'Nuevo Contrato Creado',
-      recipient: 'destinatario@example.com', // Cambia esto por el correo del destinatario real
+      recipient: 'cristiangarcianastar21@gmail.com',
       body_html: `<p>Se ha creado un nuevo contrato con ID: ${contract.id}</p>`
     }
     await notificationService.sendEmail(emailData)

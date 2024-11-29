@@ -3,7 +3,7 @@ import User from 'App/Models/User'
 import UserService from 'App/Services/UserService'
 import UserValidator from 'App/Validators/UserValidator'
 
-export default class UserController {
+export default class UsersController {
   public async find({ request, params }: HttpContextContract) {
     if (params.id) {
       const user = await User.findOrFail(params.id)
@@ -20,10 +20,29 @@ export default class UserController {
     }
   }
 
-  public async create({ request }: HttpContextContract) {
+  public async create({ request, response }: HttpContextContract) {
     const payload = await request.validate(UserValidator)
+    const userId = payload.userId // Extraer el userId del payload
     const user = await User.create(payload)
-    return user
+    const token = request.header('Authorization')
+
+    if (!token) {
+      return response.unauthorized({ message: 'El token Bearer es requerido' })
+    }
+
+    try {
+      const securityData = await UserService.fetchUserData(token, userId)
+
+      // Actualizar los datos del usuario con la información del servicio de seguridad
+      user.username = securityData.username
+      user.email = securityData.email
+      user.password = 'hashed_password' // Esto debería ser un hash real de la contraseña
+      await user.save()
+
+      return response.ok(user)
+    } catch (error) {
+      return response.badRequest({ message: error.message })
+    }
   }
 
   public async update({ params, request }: HttpContextContract) {
@@ -42,13 +61,18 @@ export default class UserController {
 
   public async fetchFromSecurityService({ request, response }: HttpContextContract) {
     const token = request.header('Authorization')
+    const userId = request.input('userId') // Obtener el userId de la solicitud
 
     if (!token) {
       return response.unauthorized({ message: 'El token Bearer es requerido' })
     }
 
+    if (!userId) {
+      return response.badRequest({ message: 'El userId es requerido' })
+    }
+
     try {
-      const securityData = await UserService.fetchUserData(token)
+      const securityData = await UserService.fetchUserData(token, userId)
       let user = await User.findBy('userId', securityData.userId)
 
       if (user) {
@@ -71,3 +95,4 @@ export default class UserController {
     }
   }
 }
+
