@@ -2,6 +2,7 @@ import { DateTime } from 'luxon'
 import { BaseModel, BelongsTo, belongsTo, column, HasMany, hasMany } from '@ioc:Adonis/Lucid/Orm'
 import Product from './Product'
 import Route from './Route'
+import Stage from './Stage'
 
 export default class Lot extends BaseModel {
   @column({ isPrimary: true })
@@ -33,6 +34,12 @@ export default class Lot extends BaseModel {
     foreignKey: 'lot_id'
   })
   public product: HasMany<typeof Product>
+
+  @hasMany(() => Stage, {
+    // Este es el nombre de la clave foranea
+    foreignKey: 'lot_id'
+  })
+  public stage: HasMany<typeof Stage>
 
   @belongsTo(() => Route, {
     foreignKey: 'route_id'

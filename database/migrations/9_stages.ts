@@ -9,6 +9,7 @@ export default class extends BaseSchema {
       table.integer('order')
       table.integer('address_id').unsigned().references('addresses.id')
       table.integer('route_id').unsigned().references('routes.id')
+      table.integer('lot_id').unsigned().references('lots.id')
 
 
       /**
