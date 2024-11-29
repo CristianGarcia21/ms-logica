@@ -32,9 +32,10 @@ export default class UsersController {
 
     try {
       const securityData = await UserService.fetchUserData(token, userId)
+      console.log(securityData);
 
       // Actualizar los datos del usuario con la información del servicio de seguridad
-      user.username = securityData.username
+      user.username = securityData.name
       user.email = securityData.email
       user.password = 'hashed_password' // Esto debería ser un hash real de la contraseña
       await user.save()
@@ -74,9 +75,10 @@ export default class UsersController {
     try {
       const securityData = await UserService.fetchUserData(token, userId)
       let user = await User.findBy('userId', securityData.userId)
+      console.log(user);
 
       if (user) {
-        user.username = securityData.username
+        user.username = securityData.name
         user.email = securityData.email
         user.password = 'hashed_password'
         await user.save()
