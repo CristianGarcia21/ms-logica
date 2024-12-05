@@ -51,4 +51,10 @@ export default class DepartmentsController {
     await department.delete()
     return response.noContent()
   }
+
+  public async municipalities({ params }: HttpContextContract) {
+    const department = await Department.findOrFail(params.id);
+    const municipalities = await department.related('municipality').query();
+    return municipalities;
+  }
 }

@@ -30,14 +30,14 @@ export default class ContractsController {
    * Crea un nuevo contrato.
    */
   public async create({ request }: HttpContextContract) {
-    const payload = await request.validate(ContractValidator) // Validar datos de entrada
+    const payload = await request.validate(ContractValidator)
     const contract = await Contract.create(payload)
 
     // Enviar correo electrónico
     const notificationService = new NotificationService()
     const emailData = {
       subject: 'Nuevo Contrato Creado',
-      recipient: 'edisson.ramirez29529@ucaldas.edu.co', // Cambia esto por el correo del destinatario real
+      recipient: 'edisson.ramirez29529@ucaldas.edu.co',
       body_html: `<p>Se ha creado un nuevo contrato con ID: ${contract.id}</p>`
     }
     await notificationService.sendEmail(emailData)
@@ -49,9 +49,9 @@ export default class ContractsController {
    * Actualiza un contrato existente.
    */
   public async update({ params, request }: HttpContextContract) {
-    const payload = await request.validate(ContractValidator) // Validar datos de entrada
+    const payload = await request.validate(ContractValidator)
     const contract = await Contract.findOrFail(params.id)
-    contract.merge(payload) // Actualizar datos validados
+    contract.merge(payload) 
     await contract.save()
     return contract
   }

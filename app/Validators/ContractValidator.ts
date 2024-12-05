@@ -21,10 +21,10 @@ export default class ContractValidator {
     estate: schema.boolean([
       rules.required(), // Asegura que sea un booleano (true o false)
     ]),
-    client_id: schema.number([
-      rules.required(),
-      rules.exists({ table: 'clients', column: 'id' }), // Asegura que el cliente exista
-    ]),
+    //client_id: schema.number([
+      //rules.required(),
+//rules.exists({ table: 'clients', column: 'id' }), // Asegura que el cliente exista
+    //]),
   })
 
   public messages = {

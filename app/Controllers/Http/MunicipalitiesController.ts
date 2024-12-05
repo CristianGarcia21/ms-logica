@@ -8,17 +8,21 @@ export default class MunicipalitiesController {
    */
   public async find({ request, params }: HttpContextContract) {
     if (params.id) {
+      // Buscar un municipio específico y cargar su departamento
       const municipality = await Municipality.findOrFail(params.id)
-      await municipality.load('department') // Cargar relación con el departamento
+      await municipality.load('department')
       return municipality
     } else {
       const data = request.all()
+
       if ('page' in data && 'per_page' in data) {
+        // Consulta paginada con la relación cargada
         const page = request.input('page', 1)
         const perPage = request.input('per_page', 20)
-        return await Municipality.query().paginate(page, perPage)
+        return await Municipality.query().preload('department').paginate(page, perPage)
       } else {
-        return await Municipality.query()
+        // Listar todos los municipios con la relación cargada
+        return await Municipality.query().preload('department')
       }
     }
   }

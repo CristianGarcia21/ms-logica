@@ -22,7 +22,7 @@ export default class UsersController {
 
   public async create({ request, response }: HttpContextContract) {
     const payload = await request.validate(UserValidator)
-    const userId = payload.userId // Extraer el userId del payload
+    const userId = payload.userId 
     const user = await User.create(payload)
     const token = request.header('Authorization')
 
