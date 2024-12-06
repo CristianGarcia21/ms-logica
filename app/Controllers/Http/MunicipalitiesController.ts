@@ -55,4 +55,19 @@ export default class MunicipalitiesController {
     await municipality.delete()
     return response.noContent()
   }
+  /**
+   * Obtiene todas las direcciones de un municipio específico
+   */
+  public async addresses({ params }: HttpContextContract) {
+    const municipalityId = params.id
+
+    // Encuentra el municipio con el ID proporcionado
+    const municipality = await Municipality.findOrFail(municipalityId)
+
+    // Precarga las direcciones relacionadas
+    await municipality.load('addresses')
+
+    // Devuelve las direcciones
+    return municipality.addresses
+  }
 }

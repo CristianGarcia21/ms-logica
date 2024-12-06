@@ -17,7 +17,7 @@ export default class AddressValidator {
     ]),
     municipality_id: schema.number([
       rules.required(),
-      rules.exists({ table: 'municipalities', column: 'id' }), // Ajustado para aceptar string como ID
+      rules.exists({ table: 'municipalities', column: 'id' }),
     ]),
   })
 

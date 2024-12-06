@@ -5,4 +5,5 @@ Route.group(() => {
     Route.post("/municipalities", "MunicipalitiesController.create");
     Route.put("/municipalities/:id", "MunicipalitiesController.update");
     Route.delete("/municipalities/:id", "MunicipalitiesController.delete");
+    Route.get('/municipalities/:id/addresses', 'MunicipalitiesController.addresses')
 })// .middleware(['security'])

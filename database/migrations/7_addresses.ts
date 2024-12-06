@@ -10,7 +10,7 @@ export default class extends BaseSchema {
       table.integer('number')
       table.string('neighborhood')
       table.string('department')
-      table.integer('municipality_id').unsigned().references('municipalities.id')
+      table.integer('municipality_id').unsigned().references('municipalities.id').onDelete('CASCADE')
 
       table.timestamp('created_at', { useTz: true })
       table.timestamp('updated_at', { useTz: true })
