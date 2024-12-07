@@ -23,7 +23,7 @@ export default class Vehicle extends BaseModel {
   public load_capacity: number
 
   @column()
-  public latitude: number | null 
+  public latitude: number | null
 
   @column()
   public longitude: number | null
@@ -34,10 +34,11 @@ export default class Vehicle extends BaseModel {
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   public updatedAt: DateTime
 
+  // Relación correcta con rutas
   @hasMany(() => Route, {
-    foreignKey: 'route_id'
+    foreignKey: 'vehicle_id'
   })
-  public route: HasMany<typeof Route>
+  public routes: HasMany<typeof Route>
 
   @hasMany(() => Operation, {
     foreignKey: 'vehicle_id'

@@ -8,9 +8,10 @@ export default class extends BaseSchema {
       table.increments('id')
 
       table.integer('contract_id').unsigned().references('contracts.id')
-      table.integer('vehicle_id').unsigned().references('vehicles.id')      
-      
-      
+      table.integer('vehicle_id').unsigned().references('id').inTable('vehicles').onDelete('CASCADE')
+
+
+
       table.timestamp('created_at', { useTz: true })
       table.timestamp('updated_at', { useTz: true })
     })

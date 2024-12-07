@@ -10,7 +10,7 @@ export default class VehiclesController {
   public async find({ request, params }: HttpContextContract) {
     if (params.id) {
       const vehicle = await Vehicle.findOrFail(params.id)
-      await vehicle.load('route') // Cargar rutas relacionadas
+      await vehicle.load('routes') // Cargar rutas relacionadas
       await vehicle.load('operation') // Cargar operaciones relacionadas
       await vehicle.load('vehicleOwner') // Cargar propietarios relacionados
       await vehicle.load('vehicleDriver') // Cargar conductores relacionados
