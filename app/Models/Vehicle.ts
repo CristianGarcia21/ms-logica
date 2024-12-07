@@ -22,6 +22,12 @@ export default class Vehicle extends BaseModel {
   @column()
   public load_capacity: number
 
+  @column()
+  public latitude: number | null 
+
+  @column()
+  public longitude: number | null
+
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
 

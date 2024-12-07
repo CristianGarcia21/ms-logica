@@ -10,6 +10,8 @@ export default class extends BaseSchema {
       table.string('brand')
       table.string('type_vehicle')
       table.integer('load_capacity')
+      table.decimal('latitude', 10, 7).nullable() // Agregar latitud
+      table.decimal('longitude', 10, 7).nullable() // Agregar longitud
       table.timestamp('created_at', { useTz: true })
       table.timestamp('updated_at', { useTz: true })
     })

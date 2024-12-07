@@ -1,5 +1,6 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Vehicle from 'App/Models/Vehicle'
+import UpdateLocationValidator from 'App/Validators/UpdateLocationValidator'
 import VehicleValidator from 'App/Validators/VehicleValidator'
 
 export default class VehiclesController {
@@ -54,5 +55,13 @@ export default class VehiclesController {
     const vehicle = await Vehicle.findOrFail(params.id)
     await vehicle.delete()
     return response.noContent()
+  }
+
+  public async updateLocation({ params, request }: HttpContextContract) {
+    const data = await request.validate(UpdateLocationValidator)
+    const vehicle = await Vehicle.findOrFail(params.id)
+    vehicle.merge(data)
+    await vehicle.save()
+    return vehicle
   }
 }
