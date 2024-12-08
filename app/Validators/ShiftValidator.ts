@@ -5,8 +5,8 @@ export default class ShiftValidator {
     driver_id: schema.number([
       rules.exists({ table: 'drivers', column: 'id' }), // Validar que el conductor exista
     ]),
-    start_time: schema.date(),
-    end_time: schema.date(),
+    start_time: schema.date({ format: 'yyyy-MM-dd' }), // Validar fecha en formato específico
+    end_time: schema.date({ format: 'yyyy-MM-dd' }),
     start_mileage: schema.number([rules.unsigned()]), // Kilometraje inicial debe ser positivo
     end_mileage: schema.number([rules.unsigned()]), // Kilometraje final debe ser positivo
   })

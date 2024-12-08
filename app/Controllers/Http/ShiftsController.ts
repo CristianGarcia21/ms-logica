@@ -28,6 +28,7 @@ export default class ShiftsController {
    */
   public async create({ request }: HttpContextContract) {
     const payload = await request.validate(ShiftValidator)
+    
     const theShift: Shift = await Shift.create(payload)
     return theShift
   }

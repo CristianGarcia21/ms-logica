@@ -6,14 +6,11 @@ export default class Shift extends BaseModel {
   @column({ isPrimary: true })
   public id: number
 
-  @column()
-  public driver_id: number
+  @column.date()
+  public start_time: DateTime;
 
-  @column()
-  public start_time: DateTime
-
-  @column()
-  public end_time: DateTime
+  @column.date()
+  public end_time: DateTime;
 
   @column()
   public start_mileage: number
@@ -21,6 +18,8 @@ export default class Shift extends BaseModel {
   @column()
   public end_mileage: number
 
+  @column()
+  public driver_id: number
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime

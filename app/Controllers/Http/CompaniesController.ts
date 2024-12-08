@@ -10,7 +10,7 @@ export default class CompaniesController {
     if (params.id) {
       const company = await Company.findOrFail(params.id)
       await company.load('client') // Cargar cliente relacionado
-      await company.load('naturalPerson') // Cargar persona natural relacionada
+     // await company.load('naturalPerson') // Cargar persona natural relacionada
       return company
     } else {
       const data = request.all()
