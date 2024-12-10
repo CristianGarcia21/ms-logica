@@ -15,9 +15,9 @@ export default class Expense extends BaseModel {
   @column()
   public description: string
 
-  @column()
-  public date: DateTime
-
+  @column.date()
+  public date: DateTime;
+  
   @column()
   public owner_id: number
 
@@ -50,7 +50,7 @@ export default class Expense extends BaseModel {
     foreignKey: 'owner_id'
   })
   public owner: BelongsTo<typeof Owner>
-  
+
   @belongsTo(() => Receipt, {
     foreignKey: 'receipt_id'
   })

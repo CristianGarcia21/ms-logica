@@ -5,7 +5,7 @@ export default class OwnersController {
     public async find({ request, params }: HttpContextContract) {
         if (params.id) {
             let theOwner: Owner = await Owner.findOrFail(params.id)
-            //await theOwner.load("user")
+            await theOwner.load("user")
             return theOwner;
         } else {
             const data = request.all()
@@ -16,7 +16,7 @@ export default class OwnersController {
             } else {
                 return await Owner.query()
             }
-    
+
         }
     }
 

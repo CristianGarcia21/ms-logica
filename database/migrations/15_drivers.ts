@@ -12,7 +12,7 @@ export default class extends BaseSchema {
       table.string('status')
       table.integer('user_id').unsigned().references('users.id')
 
-     
+
       table.timestamp('created_at', { useTz: true })
       table.timestamp('updated_at', { useTz: true })
     })
