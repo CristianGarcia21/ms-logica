@@ -5,6 +5,5 @@ Route.group(() => {
     Route.post("/operations", "OperationsController.create");
     Route.put("/operations/:id", "OperationsController.update");
     Route.delete("/operations/:id", "OperationsController.delete");
-})
-
-
+    Route.get('/operations/:id/addresses', 'OperationsController.addresses')
+})// .middleware(['security'])
