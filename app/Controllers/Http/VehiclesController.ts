@@ -58,10 +58,21 @@ export default class VehiclesController {
   }
 
   public async updateLocation({ params, request }: HttpContextContract) {
-    const data = await request.validate(UpdateLocationValidator)
-    const vehicle = await Vehicle.findOrFail(params.id)
-    vehicle.merge(data)
-    await vehicle.save()
-    return vehicle
+    const data = await request.validate(UpdateLocationValidator);
+    const vehicle = await Vehicle.findOrFail(params.id);
+
+    // Actualizar la ubicación del vehículo
+    vehicle.merge(data);
+    await vehicle.save();
+
+    // Emitir el evento de actualización de ubicación a través del WebSocket
+    const Ws = (await import('App/Services/Ws')).default;
+    Ws.io.emit('vehicles:update', {
+      id: vehicle.id,
+      latitude: vehicle.latitude,
+      longitude: vehicle.longitude,
+    });
+
+    return vehicle;
   }
 }
