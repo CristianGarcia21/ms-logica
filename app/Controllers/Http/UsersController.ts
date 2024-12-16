@@ -22,16 +22,12 @@ export default class UsersController {
 
   public async create({ request, response }: HttpContextContract) {
     const payload = await request.validate(UserValidator)
-    const userId = payload.userId 
+    const userId = payload.userId
     const user = await User.create(payload)
-    const token = request.header('Authorization')
 
-    if (!token) {
-      return response.unauthorized({ message: 'El token Bearer es requerido' })
-    }
 
     try {
-      const securityData = await UserService.fetchUserData(token, userId)
+      const securityData = await UserService.fetchUserData(userId)
       console.log(securityData);
 
       // Actualizar los datos del usuario con la información del servicio de seguridad
@@ -73,7 +69,7 @@ export default class UsersController {
     }
 
     try {
-      const securityData = await UserService.fetchUserData(token, userId)
+      const securityData = await UserService.fetchUserData( userId)
       let user = await User.findBy('userId', securityData.userId)
       console.log(user);
 
@@ -94,6 +90,27 @@ export default class UsersController {
       return response.ok(user)
     } catch (error) {
       return response.badRequest({ message: error.message })
+    }
+  }
+
+  public async findByUserId({ params, response }: HttpContextContract) {
+    const { userId } = params;
+
+    if (!userId) {
+      return response.badRequest({ message: 'El userId es requerido.' });
+    }
+
+    try {
+      const user = await User.query().where('userId', userId).first();
+
+      if (!user) {
+        return response.notFound({ message: 'Usuario no encontrado.' });
+      }
+
+      return response.ok(user);
+    } catch (error) {
+      console.error('Error al buscar usuario por userId:', error);
+      return response.internalServerError({ message: 'Error al buscar el usuario.' });
     }
   }
 }
